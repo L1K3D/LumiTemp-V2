@@ -1,20 +1,11 @@
-//Autor: Fábio Henrique Cabrini
-//Resumo: Esse programa possibilita ligar e desligar o led onboard, além de mandar o status para o Broker MQTT possibilitando o Helix saber
-//se o led está ligado ou desligado.
-//Revisões:
-//Rev1: 26-08-2023 Código portado para o ESP32 e para realizar a leitura de luminosidade e publicar o valor em um tópico aprorpiado do broker 
-//Autor Rev1: Lucas Demetrius Augusto 
-//Rev2: 28-08-2023 Ajustes para o funcionamento no FIWARE Descomplicado
-//Autor Rev2: Fábio Henrique Cabrini
-//Rev3: 1-11-2023 Refinamento do código e ajustes para o funcionamento no FIWARE Descomplicado
-//Autor Rev3: Fábio Henrique Cabrini
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include "DHT.h"
 
-#define DHTPIN 25
-#define DHTTYPE DHT22
-DHT dht(DHTPIN, DHTTYPE);
+// Configuração dos pinos e tipo de sensor DHT
+#define DHTPIN 25 // Pino de dados do sensor DHT
+#define DHTTYPE DHT22 // Tipo de sensor DHT22
+DHT dht(DHTPIN, DHTTYPE); // Inicialização do sensor DHT
 
 // Configurações - variáveis editáveis
 const char* default_SSID = "Wokwi-GUEST"; // Nome da rede Wi-Fi
@@ -23,33 +14,35 @@ const char* default_BROKER_MQTT = "20.201.112.53"; // IP do Broker MQTT
 const int default_BROKER_PORT = 1883; // Porta do Broker MQTT
 const char* default_ID_MQTT = "fiware_03x"; // ID MQTT
 
+// Tópicos MQTT para luminosidade
 const char* default_TOPICO_LUMINOSIDADE_SUBSCRIBE = "/TEF/lamp03x/cmd"; // Tópico MQTT de escuta
-const char* default_TOPICO_LUMINOSIDADE_PUBLISH_1 = "/TEF/lamp03x/attrs"; // Tópico MQTT de envio de informações para Broker
-const char* default_TOPICO_LUMINOSIDADE_PUBLISH_2 = "/TEF/lamp03x/attrs/l"; // Tópico MQTT de envio de informações para Broker
+const char* default_TOPICO_LUMINOSIDADE_PUBLISH_1 = "/TEF/lamp03x/attrs"; // Publicação de estado de luminosidade
+const char* default_TOPICO_LUMINOSIDADE_PUBLISH_2 = "/TEF/lamp03x/attrs/l"; // Publicação de valor de luminosidade
 const int default_D4 = 2; // Pino do LED onboard
-// Declaração da variável para o prefixo do tópico
+
+// Declaração das variáveis de tópico de luminosidade com cast para char*
 const char* topicPrefix = "lamp03x";
 char* TOPICO_LUMINOSIDADE_SUBSCRIBE = const_cast<char*>(default_TOPICO_LUMINOSIDADE_SUBSCRIBE);
 char* TOPICO_LUMINOSIDADE_PUBLISH_1 = const_cast<char*>(default_TOPICO_LUMINOSIDADE_PUBLISH_1);
 char* TOPICO_LUMINOSIDADE_PUBLISH_2 = const_cast<char*>(default_TOPICO_LUMINOSIDADE_PUBLISH_2);
 
-const char* default_TOPICO_UMIDADE_SUBSCRIBE = "/TEF/humi03x/cmd"; // Tópico MQTT de escuta
-const char* default_TOPICO_UMIDADE_PUBLISH_1 = "/TEF/humi03x/attrs"; // Tópico MQTT de envio de informações para Broker
-const char* default_TOPICO_UMIDADE_PUBLISH_2 = "/TEF/humi03x/attrs/h"; // Tópico MQTT de envio de informações para Broker
-// Declaração da variável para o prefixo do tópico
+// Tópicos MQTT para umidade
+const char* default_TOPICO_UMIDADE_SUBSCRIBE = "/TEF/humi03x/cmd"; // Tópico de escuta
+const char* default_TOPICO_UMIDADE_PUBLISH_1 = "/TEF/humi03x/attrs"; // Publicação de estado de umidade
+const char* default_TOPICO_UMIDADE_PUBLISH_2 = "/TEF/humi03x/attrs/h"; // Publicação de valor de umidade
 char* TOPICO_UMIDADE_SUBSCRIBE = const_cast<char*>(default_TOPICO_UMIDADE_SUBSCRIBE);
 char* TOPICO_UMIDADE_PUBLISH_1 = const_cast<char*>(default_TOPICO_UMIDADE_PUBLISH_1);
 char* TOPICO_UMIDADE_PUBLISH_2 = const_cast<char*>(default_TOPICO_UMIDADE_PUBLISH_2);
 
-const char* default_TOPICO_TEMPERATURA_SUBSCRIBE = "/TEF/temp03x/cmd"; // Tópico MQTT de escuta
-const char* default_TOPICO_TEMPERATURA_PUBLISH_1 = "/TEF/temp03x/attrs"; // Tópico MQTT de envio de informações para Broker
-const char* default_TOPICO_TEMPERATURA_PUBLISH_2 = "/TEF/temp03x/attrs/t"; // Tópico MQTT de envio de informações para Broker
-// Declaração da variável para o prefixo do tópico
+// Tópicos MQTT para temperatura
+const char* default_TOPICO_TEMPERATURA_SUBSCRIBE = "/TEF/temp03x/cmd"; // Tópico de escuta
+const char* default_TOPICO_TEMPERATURA_PUBLISH_1 = "/TEF/temp03x/attrs"; // Publicação de estado de temperatura
+const char* default_TOPICO_TEMPERATURA_PUBLISH_2 = "/TEF/temp03x/attrs/t"; // Publicação de valor de temperatura
 char* TOPICO_TEMPERATURA_SUBSCRIBE = const_cast<char*>(default_TOPICO_TEMPERATURA_SUBSCRIBE);
 char* TOPICO_TEMPERATURA_PUBLISH_1 = const_cast<char*>(default_TOPICO_TEMPERATURA_PUBLISH_1);
 char* TOPICO_TEMPERATURA_PUBLISH_2 = const_cast<char*>(default_TOPICO_TEMPERATURA_PUBLISH_2);
 
-// Variáveis para configurações editáveis
+// Configurações editáveis para conexão Wi-Fi e MQTT
 char* SSID = const_cast<char*>(default_SSID);
 char* PASSWORD = const_cast<char*>(default_PASSWORD);
 char* BROKER_MQTT = const_cast<char*>(default_BROKER_MQTT);
@@ -57,14 +50,16 @@ int BROKER_PORT = default_BROKER_PORT;
 char* ID_MQTT = const_cast<char*>(default_ID_MQTT);
 int D4 = default_D4;
 
-WiFiClient espClient;
-PubSubClient MQTT(espClient);
-char EstadoSaida = '0';
+WiFiClient espClient; // Cliente Wi-Fi
+PubSubClient MQTT(espClient); // Cliente MQTT
+char EstadoSaida = '0'; // Estado inicial do LED
 
+// Função para inicializar a comunicação serial
 void initSerial() {
     Serial.begin(115200);
 }
 
+// Função para inicializar o Wi-Fi
 void initWiFi() {
     delay(10);
     Serial.println("------Conexao WI-FI------");
@@ -74,30 +69,34 @@ void initWiFi() {
     reconectWiFi();
 }
 
+// Função para configurar o servidor MQTT e o callback de mensagens
 void initMQTT() {
     MQTT.setServer(BROKER_MQTT, BROKER_PORT);
     MQTT.setCallback(mqtt_callback);
 }
 
+// Função setup - configuração inicial do sistema
 void setup() {
-    dht.begin();
-    InitOutput();
-    initSerial();
-    initWiFi();
-    initMQTT();
+    dht.begin(); // Inicializa o sensor DHT
+    InitOutput(); // Inicializa o pino de saída
+    initSerial(); // Inicializa a comunicação serial
+    initWiFi(); // Conecta ao Wi-Fi
+    initMQTT(); // Conecta ao Broker MQTT
     delay(5000);
-    MQTT.publish(TOPICO_LUMINOSIDADE_PUBLISH_1, "s|on");
+    MQTT.publish(TOPICO_LUMINOSIDADE_PUBLISH_1, "s|on"); // Publica o estado inicial no tópico
 }
 
+// Função principal - loop
 void loop() {
-    VerificaConexoesWiFIEMQTT();
-    EnviaEstadoOutputMQTT();
-    handleLuminosity();
-    handleHumidity();
-    handleTmperature();
-    MQTT.loop();
+    VerificaConexoesWiFIEMQTT(); // Verifica as conexões Wi-Fi e MQTT
+    EnviaEstadoOutputMQTT(); // Envia o estado do LED para o broker
+    handleLuminosity(); // Função para monitoramento de luminosidade
+    handleHumidity(); // Função para monitoramento de umidade
+    handleTmperature(); // Função para monitoramento de temperatura
+    MQTT.loop(); // Mantém a conexão com o broker MQTT
 }
 
+// Função para reconectar ao Wi-Fi caso a conexão seja perdida
 void reconectWiFi() {
     if (WiFi.status() == WL_CONNECTED)
         return;
@@ -112,10 +111,11 @@ void reconectWiFi() {
     Serial.println("IP obtido: ");
     Serial.println(WiFi.localIP());
 
-    // Garantir que o LED inicie desligado
+    // Garante que o LED inicie desligado
     digitalWrite(D4, LOW);
 }
 
+// Callback para tratar mensagens recebidas do broker MQTT
 void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     String msg;
     for (int i = 0; i < length; i++) {
@@ -129,7 +129,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     String onTopic = String(topicPrefix) + "@on|";
     String offTopic = String(topicPrefix) + "@off|";
 
-    // Compara com o tópico recebido
+    // Aciona ou desliga o LED baseado no tópico
     if (msg.equals(onTopic)) {
         digitalWrite(D4, HIGH);
         EstadoSaida = '1';
@@ -141,18 +141,19 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     }
 }
 
+// Verifica conexões e tenta reconectar se necessário
 void VerificaConexoesWiFIEMQTT() {
     if (!MQTT.connected())
         reconnectMQTT();
     reconectWiFi();
 }
 
+// Envia o estado do LED ao broker MQTT
 void EnviaEstadoOutputMQTT() {
     if (EstadoSaida == '1') {
         MQTT.publish(TOPICO_LUMINOSIDADE_PUBLISH_1, "s|on");
         Serial.println("- Led Ligado");
     }
-
     if (EstadoSaida == '0') {
         MQTT.publish(TOPICO_LUMINOSIDADE_PUBLISH_1, "s|off");
         Serial.println("- Led Desligado");
@@ -161,6 +162,7 @@ void EnviaEstadoOutputMQTT() {
     delay(1000);
 }
 
+// Função para inicializar o LED com uma sequência piscante
 void InitOutput() {
     pinMode(D4, OUTPUT);
     digitalWrite(D4, HIGH);
@@ -173,13 +175,14 @@ void InitOutput() {
     }
 }
 
+// Função para reconectar ao broker MQTT
 void reconnectMQTT() {
     while (!MQTT.connected()) {
         Serial.print("* Tentando se conectar ao Broker MQTT: ");
         Serial.println(BROKER_MQTT);
         if (MQTT.connect(ID_MQTT)) {
             Serial.println("Conectado com sucesso ao broker MQTT!");
-            MQTT.subscribe(TOPICO_LUMINOSIDADE_SUBSCRIBE);
+            MQTT.subscribe(TOPICO_LUMINOSIDADE_SUBSCRIBE); // Inscrição no tópico de controle
         } else {
             Serial.println("Falha ao reconectar no broker.");
             Serial.println("Haverá nova tentativa de conexão em 2s");
@@ -188,14 +191,15 @@ void reconnectMQTT() {
     }
 }
 
+// Funções para monitorar e enviar valores de luminosidade, umidade e temperatura
 void handleLuminosity() {
-    const int potPin = 34;
+    const int potPin = 34; // Pino analógico para luminosidade
     int sensorValue = analogRead(potPin);
     int luminosity = map(sensorValue, 0, 4095, 0, 100);
-    String mensagem = String(luminosity);
-    Serial.print("Valor da luminosidade: ");
-    Serial.println(mensagem.c_str());
-    MQTT.publish(TOPICO_LUMINOSIDADE_PUBLISH_2, mensagem.c_str());
+    char msg[10];
+    sprintf(msg, "%d", luminosity);
+    MQTT.publish(TOPICO_LUMINOSIDADE_PUBLISH_2, msg); // Publica luminosidade
+    Serial.println("Luminosidade: " + String(msg));
 
     if (luminosity = 0.00)
     {
@@ -239,14 +243,15 @@ void handleLuminosity() {
       Serial.println("Luminosidade Ideal.");
 
     }
+
 }
 
 void handleHumidity() {
     float humidity = dht.readHumidity();
-    String mensagem = String(humidity);
-    Serial.print("Valor da umidade: ");
-    Serial.println(mensagem.c_str());
-    MQTT.publish(TOPICO_UMIDADE_PUBLISH_2, mensagem.c_str());
+    char msg[10];
+    sprintf(msg, "%.1f", humidity);
+    MQTT.publish(TOPICO_UMIDADE_PUBLISH_2, msg); // Publica umidade
+    Serial.println("Umidade: " + String(msg));
 
     if (humidity < 30.0)
     {
@@ -292,13 +297,12 @@ void handleHumidity() {
     }
 }
 
-
 void handleTmperature() {
     float temperature = dht.readTemperature();
-    String mensagem = String(temperature);
-    Serial.print("Valor da temperatura: ");
-    Serial.println(mensagem.c_str());
-    MQTT.publish(TOPICO_TEMPERATURA_PUBLISH_2, mensagem.c_str());
+    char msg[10];
+    sprintf(msg, "%.1f", temperature);
+    MQTT.publish(TOPICO_TEMPERATURA_PUBLISH_2, msg); // Publica temperatura
+    Serial.println("Temperatura: " + String(msg));
 
     if (temperature < 15.0)
     {
@@ -342,5 +346,4 @@ void handleTmperature() {
       Serial.println("Temperatura Ideal.");
 
     }
-
 }
