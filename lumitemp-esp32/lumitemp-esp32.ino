@@ -4,41 +4,37 @@
 
 // Configuração dos pinos e tipo de sensor DHT
 #define DHTPIN 25 // Pino de dados do sensor DHT
-#define DHTTYPE DHT22 // Tipo de sensor DHT22
+#define DHTTYPE DHT11 // Tipo de sensor DHT22
 DHT dht(DHTPIN, DHTTYPE); // Inicialização do sensor DHT
 
 // Configurações - variáveis editáveis
-const char* default_SSID = "Wokwi-GUEST"; // Nome da rede Wi-Fi
-const char* default_PASSWORD = ""; // Senha da rede Wi-Fi
+const char* default_SSID = "Galaxy S21 FE - Heitor"; // Nome da rede Wi-Fi
+const char* default_PASSWORD = "aipapai123"; // Senha da rede Wi-Fi
 const char* default_BROKER_MQTT = "20.201.112.53"; // IP do Broker MQTT
 const int default_BROKER_PORT = 1883; // Porta do Broker MQTT
 const char* default_ID_MQTT = "fiware_03x"; // ID MQTT
 
 // Tópicos MQTT para luminosidade
-const char* default_TOPICO_LUMINOSIDADE_SUBSCRIBE = "/TEF/lamp03x/cmd"; // Tópico MQTT de escuta
-const char* default_TOPICO_LUMINOSIDADE_PUBLISH_1 = "/TEF/lamp03x/attrs"; // Publicação de estado de luminosidade
-const char* default_TOPICO_LUMINOSIDADE_PUBLISH_2 = "/TEF/lamp03x/attrs/l"; // Publicação de valor de luminosidade
+const char* default_TOPICO_LUMINOSIDADE_SUBSCRIBE = "/TEF/lamp04x/cmd"; // Tópico MQTT de escuta
+const char* default_TOPICO_LUMINOSIDADE_PUBLISH_1 = "/TEF/lamp04x/attrs"; // Publicação de estado de luminosidade
+const char* default_TOPICO_LUMINOSIDADE_PUBLISH_2 = "/TEF/lamp04x/attrs/l"; // Publicação de valor de luminosidade
 const int default_D4 = 2; // Pino do LED onboard
 
 // Declaração das variáveis de tópico de luminosidade com cast para char*
-const char* topicPrefix = "lamp03x";
+const char* topicPrefix = "lamp04x";
 char* TOPICO_LUMINOSIDADE_SUBSCRIBE = const_cast<char*>(default_TOPICO_LUMINOSIDADE_SUBSCRIBE);
 char* TOPICO_LUMINOSIDADE_PUBLISH_1 = const_cast<char*>(default_TOPICO_LUMINOSIDADE_PUBLISH_1);
 char* TOPICO_LUMINOSIDADE_PUBLISH_2 = const_cast<char*>(default_TOPICO_LUMINOSIDADE_PUBLISH_2);
 
 // Tópicos MQTT para umidade
-const char* default_TOPICO_UMIDADE_SUBSCRIBE = "/TEF/humi03x/cmd"; // Tópico de escuta
-const char* default_TOPICO_UMIDADE_PUBLISH_1 = "/TEF/humi03x/attrs"; // Publicação de estado de umidade
-const char* default_TOPICO_UMIDADE_PUBLISH_2 = "/TEF/humi03x/attrs/h"; // Publicação de valor de umidade
-char* TOPICO_UMIDADE_SUBSCRIBE = const_cast<char*>(default_TOPICO_UMIDADE_SUBSCRIBE);
+const char* default_TOPICO_UMIDADE_PUBLISH_1 = "/TEF/humi04x/attrs"; // Publicação de estado de umidade
+const char* default_TOPICO_UMIDADE_PUBLISH_2 = "/TEF/humi04x/attrs/h"; // Publicação de valor de umidade
 char* TOPICO_UMIDADE_PUBLISH_1 = const_cast<char*>(default_TOPICO_UMIDADE_PUBLISH_1);
 char* TOPICO_UMIDADE_PUBLISH_2 = const_cast<char*>(default_TOPICO_UMIDADE_PUBLISH_2);
 
 // Tópicos MQTT para temperatura
-const char* default_TOPICO_TEMPERATURA_SUBSCRIBE = "/TEF/temp03x/cmd"; // Tópico de escuta
-const char* default_TOPICO_TEMPERATURA_PUBLISH_1 = "/TEF/temp03x/attrs"; // Publicação de estado de temperatura
-const char* default_TOPICO_TEMPERATURA_PUBLISH_2 = "/TEF/temp03x/attrs/t"; // Publicação de valor de temperatura
-char* TOPICO_TEMPERATURA_SUBSCRIBE = const_cast<char*>(default_TOPICO_TEMPERATURA_SUBSCRIBE);
+const char* default_TOPICO_TEMPERATURA_PUBLISH_1 = "/TEF/temp04x/attrs"; // Publicação de estado de temperatura
+const char* default_TOPICO_TEMPERATURA_PUBLISH_2 = "/TEF/temp04x/attrs/t"; // Publicação de valor de temperatura
 char* TOPICO_TEMPERATURA_PUBLISH_1 = const_cast<char*>(default_TOPICO_TEMPERATURA_PUBLISH_1);
 char* TOPICO_TEMPERATURA_PUBLISH_2 = const_cast<char*>(default_TOPICO_TEMPERATURA_PUBLISH_2);
 
