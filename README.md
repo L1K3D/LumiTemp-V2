@@ -56,7 +56,7 @@ Caso algum valor medido ultrapasse os limites estabelecidos, o LED Azul será ac
 
 ## ⚡ Diagrama Elétrico:
 
-![Diagrama Elétrico](Diagrama elétrico.png)
+![Diagrama Elétrico]()
 
 ## Fluxo de Funcionamento
 
