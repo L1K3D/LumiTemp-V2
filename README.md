@@ -11,7 +11,7 @@ Este projeto implementa um **dispositivo de registro de dados (data logger)** vo
 - **Armazenamento**: MongoDB via STH-Comet
 - **Relógio de Tempo Real**: Timestamp gerado pelo Orion Context Broker
 - **Interface de Usuário**: Dashboard em Python
-- **LED Azul**: Indicador visual, acionado quando os valores de temperatura, umidade ou luminosidade saem da faixa predefinida.
+- **LED**: Indicador visual do ESP32 Doit DEVKIT V1, acionado quando os valores de temperatura, umidade ou luminosidade saem da faixa predefinida.
 
 ## 📋 Especificações Técnicas
 
@@ -46,16 +46,16 @@ Ao iniciar, o ESP32 realiza uma breve verificação de hardware e conexões dos 
 - **Temperatura e Umidade**: O sensor DHT-11 coleta os valores de temperatura e umidade do ambiente. Estes valores são transmitidos para o ESP32, que os envia ao backend para armazenamento e exibição.
 - **Luminosidade**: O sensor LDR mede a intensidade de luz no ambiente e transmite esses dados ao ESP32, que, assim como nos demais casos, envia os valores para o backend e exibe as leituras em tempo real na dashboard.
 
-### 3. ACIONAMENTO DO LED AZUL
+### 3. ACIONAMENTO DO LED
 
-O sistema utiliza um LED azul como indicador visual do status ambiental. Quando os valores de temperatura, umidade ou luminosidade ultrapassam os limites pré-definidos (Temperatura: 15°C < t < 25°C; Luminosidade: 0% < l < 30%; Umidade: 30% < u < 50%), o LED azul é acionado, sinalizando que uma ou mais condições ambientais estão fora da faixa ideal.
+O sistema utiliza o LED do ESP32 como indicador visual do status ambiental. Quando os valores de temperatura, umidade ou luminosidade ultrapassam os limites pré-definidos (Temperatura: 15°C < t < 25°C; Luminosidade: 0% < l < 30%; Umidade: 30% < u < 50%), o LED é acionado, sinalizando que uma ou mais condições ambientais estão fora da faixa ideal.
 
 ### 4. EXIBIÇÃO DE INFORMAÇÕES
 
 O monitoramento dos dados é feito via **dashboard em Python**:
 
 - Os valores de **temperatura, umidade e luminosidade** são exibidos em tempo real, permitindo o acompanhamento direto dos parâmetros ambientais.
-- Quando algum parâmetro ultrapassa os limites configurados, o **LED azul** acende no dispositivo, e o status crítico é indicado na dashboard.
+- Quando algum parâmetro ultrapassa os limites configurados, o **LED** acende no dispositivo, e o status crítico é indicado na dashboard.
 - Os dados recebem um timestamp gerado pelo **Orion Context Broker**, garantindo o registro do momento exato da coleta.
 
 ### 5. ARMAZENAMENTO DE DADOS
@@ -76,7 +76,6 @@ Caso seja necessário redefinir o sistema, pode-se reiniciar o ESP32 manualmente
 - **Resistor de 10kΩ**: Para o sensor LDR.
 - **Protoboard**: Para prototipagem.
 - **Jumpers**: Para conectar os componentes.
-- **LED Azul**: Indicador visual.
 - **Resistores**: Para configurar o LED e os sensores.
 
 ## ⚡ Diagrama Elétrico
@@ -101,7 +100,7 @@ Caso seja necessário redefinir o sistema, pode-se reiniciar o ESP32 manualmente
 4. **Monitoramento e Notificação**:
    - O **Orion Context Broker** gera timestamps para cada dado coletado.
    - A **dashboard em Python** permite visualizar os dados em tempo real.
-   - Se algum valor de temperatura, umidade ou luminosidade ultrapassar os limites estabelecidos, o **LED Azul** será acionado como um alerta visual.
+   - Se algum valor de temperatura, umidade ou luminosidade ultrapassar os limites estabelecidos, o **LED** será acionado como um alerta visual.
 
 ## ⚙️ Como Configurar
 
@@ -109,7 +108,7 @@ Caso seja necessário redefinir o sistema, pode-se reiniciar o ESP32 manualmente
 
 - Conecte o **DHT-11** ao pino 4 do ESP32 (pino de dados).
 - Conecte o **LDR** ao pino analógico do ESP32 (pino A0, por exemplo).
-- Conecte o **LED Azul** ao pino digital do ESP32 (pino D2, por exemplo).
+- Conecte o **LED** ao pino digital do ESP32 (pino D2, por exemplo).
 
 ### 2. Configuração do Backend
 
@@ -123,7 +122,7 @@ Caso seja necessário redefinir o sistema, pode-se reiniciar o ESP32 manualmente
   
 ### 4. Rodar o Sistema
 
-- Após conectar o hardware e configurar o backend, o dispositivo começará a coletar dados dos sensores. O LED Azul será acionado sempre que algum parâmetro estiver fora da faixa ideal, e os dados serão enviados e exibidos em tempo real na dashboard.
+- Após conectar o hardware e configurar o backend, o dispositivo começará a coletar dados dos sensores. O LED será acionado sempre que algum parâmetro estiver fora da faixa ideal, e os dados serão enviados e exibidos em tempo real na dashboard.
 
 ---
 
