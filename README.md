@@ -102,6 +102,10 @@ Caso seja necessário redefinir o sistema, pode-se reiniciar o ESP32 manualmente
    - A **dashboard em Python** permite visualizar os dados em tempo real.
    - Se algum valor de temperatura, umidade ou luminosidade ultrapassar os limites estabelecidos, o **LED** será acionado como um alerta visual.
 
+## 🖧 Arquitetura LumiTemp Data Logger IoT
+
+![Arquitetura LumiTemp](https://github.com/L1K3D/LumiTemp-V2/blob/main/Arquitetura%20LumiTemp.jpeg?raw=true)
+
 ## ⚙️ Como Configurar
 
 ### 1. Conectar os Sensores ao ESP32
