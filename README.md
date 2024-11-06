@@ -54,6 +54,9 @@ Caso algum valor medido ultrapasse os limites estabelecidos, o LED Azul será ac
 - **LED Azul**: Indicador visual.
 - **Resistores**: Para configurar o LED e os sensores.
 
+## ⚡ Diagrama Elétrico:
+
+
 ## Fluxo de Funcionamento
 
 1. **Leitura dos Sensores**:
