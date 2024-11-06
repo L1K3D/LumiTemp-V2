@@ -83,6 +83,8 @@ Caso seja necessário redefinir o sistema, pode-se reiniciar o ESP32 manualmente
 
 ![Diagrama Elétrico Wokwi](https://github.com/L1K3D/LumiTemp-V2/blob/main/Diagrama%20El%C3%A9trico%20Wokwi.png?raw=true)
 
+![Diagrama elétrico Físico](https://github.com/L1K3D/LumiTemp-V2/blob/main/Diagrama%20el%C3%A9trico%20F%C3%ADsico.jpg?raw=true)
+
 ## 🔄 Fluxo de Funcionamento
 
 1. **Leitura dos Sensores**:
