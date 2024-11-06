@@ -1,8 +1,8 @@
-# 🚀 Data Logger IoT - Monitoramento Ambiental
+# 🚀 LumiTemp Data Logger IoT - Monitoramento Ambiental
 
 Este projeto implementa um **dispositivo de registro de dados (data logger)** voltado para o **monitoramento de condições ambientais** em espaços controlados, como salas, estufas ou ambientes sensíveis. O sistema realiza o monitoramento de **temperatura**, **umidade relativa do ar** e **luminosidade** em tempo real, e utiliza o conceito de **Internet das Coisas (IoT)** para coletar, armazenar e transmitir os dados.
 
-## Características Principais
+## 🛠️ Características Principais
 
 - **Sensores de Temperatura e Umidade**: DHT-11
 - **Sensor de Luminosidade**: LDR (Light Dependent Resistor)
@@ -13,7 +13,7 @@ Este projeto implementa um **dispositivo de registro de dados (data logger)** vo
 - **Interface de Usuário**: Dashboard em Python
 - **LED Azul**: Indicador visual, acionado quando os valores de temperatura, umidade ou luminosidade saem da faixa predefinida.
 
-## 🛠️ Especificações Técnicas
+## 📋 Especificações Técnicas
 
 - **Microcontrolador**: ESP32 Doit DEVKIT V1
   - Chip ESP32, com conectividade Wi-Fi e Bluetooth.
@@ -33,17 +33,42 @@ Este projeto implementa um **dispositivo de registro de dados (data logger)** vo
 - **Relógio de Tempo Real**:
   - O timestamp dos dados coletados é gerado pelo **Orion Context Broker**.
 
-## Gatilhos e Níveis de Alerta
+## 📋 Manual de Operação e Funcionamento Geral do Sistema
 
-O sistema está configurado para acionar um **LED Azul** no ESP32 quando os valores dos sensores saírem dos seguintes limites predefinidos:
+### 1. INICIALIZAÇÃO
 
-- **Temperatura**: 15°C < t < 25°C
-- **Luminosidade**: 0 < l < 30%
-- **Umidade**: 30% < u < 50%
+O sistema é alimentado e controlado pelo microcontrolador ESP32, que inicia automaticamente a coleta de dados dos sensores de temperatura, umidade e luminosidade assim que é ligado. O sistema estabelece uma conexão Wi-Fi para se comunicar com a plataforma **FIWARE Descomplicado** e transmite os dados para o backend em tempo real. 
 
-Caso algum valor medido ultrapasse os limites estabelecidos, o LED Azul será acionado, sinalizando que os parâmetros ambientais estão fora da faixa ideal.
+Ao iniciar, o ESP32 realiza uma breve verificação de hardware e conexões dos sensores e exibe os dados coletados na **dashboard em Python**, caso ela esteja configurada e em execução.
 
-## Lista de Materiais
+### 2. MEDIÇÃO DE PARÂMETROS
+
+- **Temperatura e Umidade**: O sensor DHT-11 coleta os valores de temperatura e umidade do ambiente. Estes valores são transmitidos para o ESP32, que os envia ao backend para armazenamento e exibição.
+- **Luminosidade**: O sensor LDR mede a intensidade de luz no ambiente e transmite esses dados ao ESP32, que, assim como nos demais casos, envia os valores para o backend e exibe as leituras em tempo real na dashboard.
+
+### 3. ACIONAMENTO DO LED AZUL
+
+O sistema utiliza um LED azul como indicador visual do status ambiental. Quando os valores de temperatura, umidade ou luminosidade ultrapassam os limites pré-definidos (Temperatura: 15°C < t < 25°C; Luminosidade: 0% < l < 30%; Umidade: 30% < u < 50%), o LED azul é acionado, sinalizando que uma ou mais condições ambientais estão fora da faixa ideal.
+
+### 4. EXIBIÇÃO DE INFORMAÇÕES
+
+O monitoramento dos dados é feito via **dashboard em Python**:
+
+- Os valores de **temperatura, umidade e luminosidade** são exibidos em tempo real, permitindo o acompanhamento direto dos parâmetros ambientais.
+- Quando algum parâmetro ultrapassa os limites configurados, o **LED azul** acende no dispositivo, e o status crítico é indicado na dashboard.
+- Os dados recebem um timestamp gerado pelo **Orion Context Broker**, garantindo o registro do momento exato da coleta.
+
+### 5. ARMAZENAMENTO DE DADOS
+
+O sistema utiliza o **STH-Comet** para armazenar os dados no MongoDB, através da plataforma **FIWARE Descomplicado**. Todos os registros de temperatura, umidade e luminosidade são mantidos no banco de dados e podem ser consultados para análise histórica, permitindo acompanhar tendências ambientais ao longo do tempo.
+
+### 6. REDEFINIÇÃO E MANUTENÇÃO DO SISTEMA
+
+Caso seja necessário redefinir o sistema, pode-se reiniciar o ESP32 manualmente ou por meio de comandos específicos na plataforma de desenvolvimento. Além disso, ajustes na faixa de operação dos sensores podem ser configurados diretamente no código-fonte do dispositivo, permitindo personalizar os limites de alerta conforme o ambiente.
+
+---
+
+## 📦 Lista de Materiais
 
 - **ESP32 Doit DEVKIT V1**: Microcontrolador com Wi-Fi e Bluetooth.
 - **DHT-11**: Sensor de temperatura e umidade.
@@ -54,11 +79,11 @@ Caso algum valor medido ultrapasse os limites estabelecidos, o LED Azul será ac
 - **LED Azul**: Indicador visual.
 - **Resistores**: Para configurar o LED e os sensores.
 
-## ⚡ Diagrama Elétrico:
+## ⚡ Diagrama Elétrico
 
 ![Diagrama Elétrico]()
 
-## Fluxo de Funcionamento
+## 🔄 Fluxo de Funcionamento
 
 1. **Leitura dos Sensores**:
    - O **DHT-11** lê os valores de temperatura e umidade.
@@ -76,7 +101,7 @@ Caso algum valor medido ultrapasse os limites estabelecidos, o LED Azul será ac
    - A **dashboard em Python** permite visualizar os dados em tempo real.
    - Se algum valor de temperatura, umidade ou luminosidade ultrapassar os limites estabelecidos, o **LED Azul** será acionado como um alerta visual.
 
-## Como Configurar
+## ⚙️ Como Configurar
 
 ### 1. Conectar os Sensores ao ESP32
 
@@ -100,7 +125,7 @@ Caso algum valor medido ultrapasse os limites estabelecidos, o LED Azul será ac
 
 ---
 
-## 🤝 Integrantes do Projeto:
+## 🤝 Integrantes do Projeto
 
 - Enzo Brito Alves de Oliveira - RA: 082220040;
 - Erikson Vieira Queiroz - RA: 082220021;
@@ -109,6 +134,8 @@ Caso algum valor medido ultrapasse os limites estabelecidos, o LED Azul será ac
 - Tainara do Nascimento Casimiro - RA: 082220011;
 - William Santim - RA: 082220033
 
-## 🎥 Vídeo Demonstrativo:
+## 🎥 Vídeo Demonstrativo
 
 - Link: 
+
+---
