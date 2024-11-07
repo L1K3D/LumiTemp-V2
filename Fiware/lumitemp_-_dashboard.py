@@ -106,7 +106,7 @@ app.layout = html.Div([
     # Intervalo de atualização dos dados (a cada 10 segundos)
     dcc.Interval(
         id='interval-component',
-        interval=10*1000,  # em milissegundos (10 segundos)
+        interval=10*6000,  # em milissegundos (10 segundos)
         n_intervals=0
     )
 ])
@@ -174,7 +174,7 @@ def update_graph(stored_data):
         # Cria as séries de dados para o gráfico
         trace_luminosity = go.Scatter(
             x=stored_data['timestamps'],
-            y=stored_data['temperature_values'],
+            y=stored_data['luminosity_values'],
             mode='lines+markers',
             name='Luminosidade',
             line=dict(color='orange')
