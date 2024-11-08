@@ -141,6 +141,6 @@ If needed, the system can be reset by manually restarting the ESP32 or using spe
 
 ## 🎥 Demonstration Video
 
-- Link: 
+- Link: https://youtu.be/Guy3ixSGLvA
 
 ---
